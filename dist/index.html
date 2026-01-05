@@ -1,1 +1,265 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexandria Dynamics</title>
+    <style>
+        :root {
+            --text-color: #e0e0e0;
+            --accent-color: #c0a080;
+            --grid-size: 20px;
+        }
 
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; background-color: #000;
+            color: var(--text-color);
+            font-family: 'serif', 'Garamond', Georgia, serif;
+            overflow: hidden;
+        }
+
+        #bg-image {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: url('unnamed.jpg') center/cover no-repeat;
+            opacity: 0.6;
+            filter: grayscale(100%) brightness(50%);
+            z-index: -2;
+            mask-image: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 100%);
+        }
+
+        #grid-background {
+            position: fixed;
+            top: -10%; left: -10%;
+            width: 120%; height: 120%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            z-index: -1;
+            will-change: transform;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 50px;
+            z-index: 100;
+            position: fixed;
+            top: 0; width: 100%;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+
+        .nav-left span {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-right: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #content-area {
+            position: absolute;
+            top: 100px;
+            bottom: 80px;
+            left: 0; right: 0;
+            padding: 0 10% 50px 10%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+        }
+
+        #content-area::-webkit-scrollbar { width: 0px; }
+
+        .main-title { margin-top: 15vh; text-align: center; }
+        .main-title h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            letter-spacing: 12px;
+            color: var(--accent-color);
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        /* Sekce - upraveno pro více pohledů */
+        #dogma-view, #horizon-view {
+            display: none;
+            max-width: 850px;
+            text-align: left;
+            animation: fadeIn 1.2s ease-out forwards;
+            padding-top: 50px;
+        }
+
+        .dogma-list {
+            border-left: 2px solid var(--accent-color);
+            padding-left: 25px;
+            margin: 30px 0;
+        }
+
+        .dogma-item { margin-bottom: 25px; font-size: 1.1rem; line-height: 1.5; }
+        .highlight { color: var(--accent-color); font-weight: bold; }
+        .strike { text-decoration: line-through; opacity: 0.4; margin-right: 10px; }
+
+        .our-stand {
+            background: rgba(192, 160, 128, 0.05);
+            padding: 35px;
+            border: 1px solid rgba(192, 160, 128, 0.2);
+            margin: 45px 0;
+        }
+
+        .our-stand h4 {
+            margin-top: 0;
+            color: var(--accent-color);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+
+        .formula-box {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 4px;
+            border: 1px solid rgba(192, 160, 128, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            margin: 10px 0;
+            color: var(--accent-color);
+        }
+
+        .long-text { font-size: 1.15rem; line-height: 1.9; opacity: 0.95; text-align: justify; }
+
+        .diagram-container {
+            width: 100%;
+            margin: 40px 0;
+            border: 1px solid rgba(192, 160, 128, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .diagram-container img { max-width: 100%; height: auto; }
+
+        footer {
+            position: fixed;
+            bottom: 0; width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: lightUp 4s ease-out forwards; }
+        @keyframes lightUp { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="fade-in">
+
+    <div id="bg-image"></div>
+    <div id="grid-background"></div>
+
+    <header>
+        <div class="nav-left">
+            <span onclick="goView('home-view')">Domů</span>
+            <span onclick="goView('dogma-view')">Dogma</span>
+            <span onclick="goView('horizon-view')">Horizont</span>
+        </div>
+        <div class="nav-right">CZ | <span style="opacity: 0.3;">EN</span></div>
+    </header>
+
+    <main id="content-area">
+        <div id="home-view" class="main-title">
+            <h1>Alexandria Dynamics</h1>
+            <p style="font-style: italic; opacity: 0.7; margin-top: 15px; letter-spacing: 2px; font-size: 1.3rem;">Vědění generací</p>
+        </div>
+
+        <div id="dogma-view">
+            <h2 style="color: var(--accent-color); letter-spacing: 5px; text-transform: uppercase;">DOGMA A JEHO DEMOLICE</h2>
+            <p class="long-text">Současná věda skládá vzorce pro stíny, ale <span class="highlight">ignoruje existenci média</span>. Jsme mistry v měření následků, ale slepí k příčinám.</p>
+            
+            <div class="dogma-list">
+                <div class="dogma-item"><span class="strike">Λ (Kosmologická konstanta)</span> <span class="highlight">OČIŠTĚNO</span></div>
+                <div class="dogma-item"><span class="strike">Temná hmota a energie</span> <span class="highlight">OČIŠTĚNO</span></div>
+                <div class="dogma-item"><span class="strike">Vakuum (Iluze prázdna)</span> <span class="highlight">OČIŠTĚNO</span></div>
+            </div>
+
+            <div class="our-stand">
+                <h4>Náš Postoj</h4>
+                <div class="dogma-item"><span class="highlight">1. Vesmír je nehomogenní.</span><br>Rovnováha není statický stav, ale dynamický proces v proměnlivém poli.</div>
+                <div class="dogma-item"><span class="highlight">2. Akce a reakce pole.</span><br>Těleso působí na prostor a prostor musí působit na teleso. "Vakuum" nemá jak působit – proto nemůže existovat.</div>
+                <div class="dogma-item"><span class="highlight">3. Prostor jako základní jednotka.</span><br>Vše je odvozeno z média: <span class="formula-box">P = mc<sup>4</sup></span></div>
+            </div>
+
+            <h3 style="color: var(--accent-color); margin-top: 50px; letter-spacing: 3px;">OČIŠTĚNÁ REALITA</h3>
+            <div class="long-text">
+                <p>Vesmír je hierarchie hustot: <span class="highlight">Prostor je řidší než energie a energie je řidší než hmota.</span></p>
+                <p>Hmota není pevnou látkou, je to vlnění tak husté, že vytvořilo stabilní uzel v poli. Od nejřidšího prostoru až po nejhustší hmotu – vše je propojený tanec frekvencí v nasyceném oceánu existence.</p>
+            </div>
+        </div>
+
+        <div id="horizon-view">
+            <h2 style="color: var(--accent-color); letter-spacing: 5px; text-transform: uppercase;">HORIZONT: Mechanismus nasycení</h2>
+            
+            <div class="diagram-container">
+                <img src="horizont.png" alt="Mechanismus horizontu">
+            </div>
+
+            <div class="our-stand">
+                <h4>Čtyři fáze útlumu vlnění</h4>
+                <div class="dogma-item"><span class="highlight">1. Akrece (Motor Gravitace):</span> Hmota se rozkládá na energii a zrychluje na limitní rychlost. Všechna gravitace vzniká zde rotací energie před horizontem.</div>
+                <div class="dogma-item"><span class="highlight">2. První horizont (Lom působení):</span> Bod fatálního brzdění. Zde se láme směr – odteď se gravitace i světlo šíří pouze směrem dovnitř.</div>
+                <div class="dogma-item"><span class="highlight">3. Meziprostor (Zóna komprese):</span> Energie je stlačována na surovou hmotu. Už nepůsobí na okolí venku, je jen pasivně drcena tlakem akrece.</div>
+                <div class="dogma-item"><span class="highlight">4. Druhý horizont (Zástava času):</span> Konečná hranice. Vlnění ustává, čas stojí. Pro zbytek vesmíru tato hmota gravitačně ani informačně neexistuje.</div>
+            </div>
+
+            <div class="our-stand">
+                <h4>Fenomén JET: Limit průtoku</h4>
+                <p>Kvůli časové brzdě <strong>mezi oběma horizonty</strong> má systém omezený průtok. Pokud akrece přivádí více, než kolik je uzel schopen <strong>pojmout</strong>, přebytečná energie je vystřelena póly jako pojistný ventil – JET.</p>
+            </div>
+
+            <p class="long-text">Černá díra je důkazem nehomogenity – bodem, kde hmota naráží na limit a její potenciál se přelévá do potenciálu prostoru (P). Žádná nekonečna. Jen Error v dogmatu.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div>Disclaimer: Součást teoretického výzkumu dynamických systémů. &copy; 2025 Alexandria Dynamics.</div>
+    </footer>
+
+    <script>
+        const views = ['home-view', 'dogma-view', 'horizon-view'];
+        const bg = document.getElementById('bg-image');
+        const grid = document.getElementById('grid-background');
+        const area = document.getElementById('content-area');
+
+        function goView(id) {
+            views.forEach(v => {
+                document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
+            });
+            area.scrollTop = 0;
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            bg.style.setProperty('--mouse-x', x + '%');
+            bg.style.setProperty('--mouse-y', y + '%');
+
+            const moveX = (window.innerWidth / 2 - e.clientX) * 0.02;
+            const moveY = (window.innerHeight / 2 - e.clientY) * 0.02;
+            grid.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
+</body>
+</html>
