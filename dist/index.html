@@ -6,35 +6,192 @@
 <title>Alexandria Dynamics</title>
 
 <style>
-:root {
-  --accent: #c0a080;
-  --text: #e0e0e0;
+:root{
+  --accent:#c0a080;
+  --text:#e0e0e0;
+  --grid:24px;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #000;
-  color: var(--text);
-  font-family: Garamond, Georgia, serif;
-  overflow: hidden;
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  background:#000;
+  color:var(--text);
+  font-family:Garamond, Georgia, serif;
+  overflow:hidden;
 }
 
 /* ===== BACKGROUND ===== */
-#bg {
-  position: fixed;
-  inset: 0;
+#bg{
+  position:fixed;
+  inset:0;
   background:
-    linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.9)),
-    url("unnamed.jpg") center / cover no-repeat;
-  z-index: -3;
+    linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.9)),
+    url("unnamed.jpg") center/cover no-repeat;
+  z-index:-3;
 }
 
 /* ===== GRID ===== */
-#grid {
-  position: fixed;
-  inset: 0;
+#grid{
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:var(--grid) var(--grid);
+  z-index:-2;
+}
+
+/* ===== HEADER ===== */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:22px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(to bottom, rgba(0,0,0,.9), transparent);
+  z-index:10;
+}
+
+.nav span{
+  margin-right:28px;
+  letter-spacing:3px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:var(--accent);
+  cursor:pointer;
+}
+
+.lang{
+  opacity:.5;
+}
+
+/* ===== CONTENT ===== */
+main{
+  position:absolute;
+  top:120px;
+  bottom:80px;
+  width:100%;
+  overflow-y:auto;
+}
+
+.view{
+  display:none;
+  max-width:900px;
+  margin:0 auto;
+  padding:40px;
+  animation:fade .8s ease forwards;
+}
+
+.view.active{display:block;}
+
+h1{
+  text-align:center;
+  font-size:clamp(3rem,7vw,4.5rem);
+  letter-spacing:14px;
+  color:var(--accent);
+  margin-top:18vh;
+}
+
+.subtitle{
+  text-align:center;
+  margin-top:18px;
+  opacity:.7;
+  font-style:italic;
+  letter-spacing:3px;
+  font-size:1.3rem;
+}
+
+h2{
+  letter-spacing:5px;
+  color:var(--accent);
+  text-transform:uppercase;
+}
+
+p{
+  font-size:1.15rem;
+  line-height:1.85;
+  text-align:justify;
+}
+
+.block{
+  border-left:2px solid var(--accent);
+  padding-left:25px;
+  margin:35px 0;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  text-align:center;
+  padding:14px 0;
+  font-size:.75rem;
+  background:rgba(0,0,0,.9);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(12px);}
+  to{opacity:1; transform:none;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="bg"></div>
+<div id="grid"></div>
+
+<header>
+  <div class="nav">
+    <span onclick="show('home')">Domů</span>
+    <span onclick="show('dogma')">Dogma</span>
+    <span onclick="show('horizon')">Horizont</span>
+  </div>
+  <div class="lang">CZ | EN</div>
+</header>
+
+<main>
+  <section id="home" class="view active">
+    <h1>Alexandria Dynamics</h1>
+    <div class="subtitle">Vědění generací</div>
+  </section>
+
+  <section id="dogma" class="view">
+    <h2>Dogma a jeho demolice</h2>
+    <p>Současná věda měří následky, nikoli příčiny. Popisuje stíny, ale ignoruje médium.</p>
+
+    <div class="block">
+      <p><s>Temná hmota</s> — <strong>ODSTRANĚNO</strong></p>
+      <p><s>Temná energie</s> — <strong>ODSTRANĚNO</strong></p>
+      <p><s>Vakuum</s> — <strong>ILUZE</strong></p>
+    </div>
+  </section>
+
+  <section id="horizon" class="view">
+    <h2>Horizont</h2>
+    <p>Černá díra není singularita. Je to bod saturace pole.</p>
+  </section>
+</main>
+
+<footer>
+  Součást teoretického výzkumu dynamických systémů · © 2025 Alexandria Dynamics
+</footer>
+
+<script>
+function show(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+</html>  inset: 0;
   background-image:
     linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
