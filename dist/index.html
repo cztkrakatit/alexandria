@@ -2,39 +2,223 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alexandria Dynamics</title>
 
 <style>
 :root{
-    --text:#e0e0e0;
-    --accent:#c0a080;
-    --grid:22px;
+  --accent:#c0a080;
+  --text:#e0e0e0;
 }
 
 html,body{
-    margin:0;
-    padding:0;
-    min-height:100%;
-    background:#000;
-    color:var(--text);
-    font-family:Garamond, Georgia, serif;
-    overflow-x:hidden;
+  margin:0;
+  height:100%;
+  background:#000;
+  color:var(--text);
+  font-family: Garamond, Georgia, serif;
+  overflow:hidden;
 }
 
-/* ================= BACKGROUND ================= */
-
-#bg-image{
-    position:fixed;
-    inset:0;
-    background:url("unnamed.jpg") center/cover no-repeat;
-    opacity:.45;
-    filter:grayscale(100%) brightness(45%);
-    z-index:-2;
+/* ===== POZADÍ + LAMPA ===== */
+#bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(
+      circle at var(--mx,50%) var(--my,50%),
+      rgba(255,220,180,.18) 0%,
+      rgba(0,0,0,.9) 55%
+    ),
+    linear-gradient(#050505,#000);
+  z-index:-2;
 }
 
+/* ===== MŘÍŽKA ===== */
 #grid{
-    position:fixed;
+  position:fixed;
+  inset:-10%;
+  background-image:
+    linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
+  background-size:22px 22px;
+  z-index:-1;
+}
+
+/* ===== HLAVIČKA ===== */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:28px 50px;
+  box-sizing:border-box;
+  background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent);
+}
+
+header span{
+  letter-spacing:4px;
+  text-transform:uppercase;
+  cursor:pointer;
+  color:var(--accent);
+  margin-right:30px;
+}
+
+header .lang{
+  opacity:.5;
+}
+
+/* ===== OBSAH ===== */
+main{
+  position:absolute;
+  top:120px;
+  bottom:70px;
+  left:0;
+  right:0;
+  overflow-y:auto;
+  padding:0 10%;
+}
+
+main::-webkit-scrollbar{width:0}
+
+/* ===== HOME ===== */
+#home{
+  margin-top:18vh;
+  text-align:center;
+}
+
+#home h1{
+  font-size:clamp(3rem,7vw,4.5rem);
+  letter-spacing:14px;
+  color:var(--accent);
+  margin:0;
+}
+
+#home p{
+  margin-top:18px;
+  opacity:.7;
+  font-style:italic;
+  letter-spacing:3px;
+  font-size:1.3rem;
+}
+
+/* ===== SEKCE ===== */
+.section{
+  display:none;
+  max-width:900px;
+  margin:auto;
+  animation:fade .8s ease-out forwards;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:none}
+}
+
+.section h2{
+  color:var(--accent);
+  letter-spacing:5px;
+  margin-bottom:30px;
+}
+
+.block{
+  border-left:2px solid var(--accent);
+  padding-left:25px;
+  margin:30px 0;
+  line-height:1.6;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  text-align:center;
+  padding:18px;
+  font-size:.75rem;
+  opacity:.6;
+  background:rgba(0,0,0,.9);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+</style>
+</head>
+
+<body>
+
+<div id="bg"></div>
+<div id="grid"></div>
+
+<header>
+  <div>
+    <span onclick="show('home')">Domů</span>
+    <span onclick="show('dogma')">Dogma</span>
+    <span onclick="show('horizont')">Horizont</span>
+  </div>
+  <div class="lang">CZ | EN</div>
+</header>
+
+<main>
+  <section id="home">
+    <h1>Alexandria<br>Dynamics</h1>
+    <p>Vědění generací</p>
+  </section>
+
+  <section id="dogma" class="section">
+    <h2>DOGMA</h2>
+    <div class="block">
+      Současná věda měří důsledky, nikoliv médium.<br>
+      Vesmír není prázdný. Je strukturovaný.
+    </div>
+    <div class="block">
+      Prostor je nositelem reality.<br>
+      Hmota je lokální zhroucení pole.
+    </div>
+  </section>
+
+  <section id="horizont" class="section">
+    <h2>HORIZONT</h2>
+    <div class="block">
+      Černá díra není singularita.<br>
+      Je to bod nasycení pole.
+    </div>
+    <div class="block">
+      Čas se nezastaví — ztratí směr.
+    </div>
+  </section>
+</main>
+
+<footer>
+  Součást teoretického výzkumu dynamických systémů · © 2025 Alexandria Dynamics
+</footer>
+
+<script>
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+show("home");
+
+function move(x,y){
+  document.documentElement.style.setProperty("--mx",x+"%");
+  document.documentElement.style.setProperty("--my",y+"%");
+}
+
+document.addEventListener("mousemove",e=>{
+  move(e.clientX/window.innerWidth*100,
+       e.clientY/window.innerHeight*100);
+});
+
+document.addEventListener("touchmove",e=>{
+  const t=e.touches[0];
+  move(t.clientX/window.innerWidth*100,
+       t.clientY/window.innerHeight*100);
+});
+</script>
+
+</body>
+</html>    position:fixed;
     inset:-10%;
     background-image:
         linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
