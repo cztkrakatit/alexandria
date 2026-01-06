@@ -6,60 +6,201 @@
 <title>Alexandria Dynamics</title>
 
 <style>
-:root{
-  --accent:#c0a080;
-  --text:#e0e0e0;
+:root {
+  --accent: #c0a080;
+  --text: #e0e0e0;
 }
 
-html,body{
-  margin:0;
-  height:100%;
-  background:#000;
-  color:var(--text);
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #000;
+  color: var(--text);
   font-family: Garamond, Georgia, serif;
-  overflow:hidden;
+  overflow: hidden;
 }
 
-/* ===== POZADÍ + LAMPA ===== */
-#bg{
-  position:fixed;
-  inset:0;
+/* ===== BACKGROUND ===== */
+#bg {
+  position: fixed;
+  inset: 0;
   background:
-    radial-gradient(
-      circle at var(--mx,50%) var(--my,50%),
-      rgba(255,220,180,.18) 0%,
-      rgba(0,0,0,.9) 55%
-    ),
-    linear-gradient(#050505,#000);
-  z-index:-2;
+    linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.9)),
+    url("unnamed.jpg") center / cover no-repeat;
+  z-index: -3;
 }
 
-/* ===== MŘÍŽKA ===== */
-#grid{
-  position:fixed;
-  inset:-10%;
+/* ===== GRID ===== */
+#grid {
+  position: fixed;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
-  background-size:22px 22px;
-  z-index:-1;
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: -2;
 }
 
-/* ===== HLAVIČKA ===== */
-header{
-  position:fixed;
-  top:0;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:28px 50px;
-  box-sizing:border-box;
-  background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent);
+/* ===== HEADER ===== */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,.9), transparent);
+  z-index: 10;
 }
 
-header span{
-  letter-spacing:4px;
-  text-transform:uppercase;
+.nav span {
+  margin-right: 30px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* ===== CONTENT ===== */
+main {
+  position: absolute;
+  top: 120px;
+  bottom: 80px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.view {
+  display: none;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.view.active {
+  display: block;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(3rem, 8vw, 5rem);
+  letter-spacing: 14px;
+  color: var(--accent);
+}
+
+.subtitle {
+  text-align: center;
+  font-style: italic;
+  opacity: .7;
+  margin-top: 20px;
+  font-size: 1.3rem;
+}
+
+h2 {
+  letter-spacing: 5px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+p {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+/* ===== BLOCK ===== */
+.block {
+  border-left: 2px solid var(--accent);
+  padding-left: 24px;
+  margin: 30px 0;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 14px 0;
+  text-align: center;
+  font-size: .75rem;
+  background: rgba(0,0,0,.95);
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+</style>
+</head>
+
+<body>
+
+<div id="bg"></div>
+<div id="grid"></div>
+
+<header>
+  <div class="nav">
+    <span onclick="show('home')">Domů</span>
+    <span onclick="show('dogma')">Dogma</span>
+    <span onclick="show('horizon')">Horizont</span>
+  </div>
+  <div style="opacity:.4">CZ | EN</div>
+</header>
+
+<main>
+
+<section id="home" class="view active">
+  <h1>Alexandria Dynamics</h1>
+  <div class="subtitle">Vědění generací</div>
+</section>
+
+<section id="dogma" class="view">
+  <h2>Dogma a jeho demolice</h2>
+  <p>Současná věda měří následky, nikoli příčiny. Popisuje stíny, ale ignoruje médium.</p>
+
+  <div class="block">
+    <p><s>Temná hmota</s> — <strong>ODSTRANĚNO</strong></p>
+    <p><s>Temná energie</s> — <strong>ODSTRANĚNO</strong></p>
+    <p><s>Vakuum</s> — <strong>ILUZE</strong></p>
+  </div>
+
+  <p>
+    Prostor není prázdný.  
+    Prostor je nositel.  
+    Hmota je nasycení pole.
+  </p>
+</section>
+
+<section id="horizon" class="view">
+  <h2>Horizont nasycení</h2>
+
+  <div class="block">
+    <p><strong>1.</strong> Akrece – energie se láme</p>
+    <p><strong>2.</strong> První horizont – ztráta působení</p>
+    <p><strong>3.</strong> Komprese – vznik hmoty</p>
+    <p><strong>4.</strong> Druhý horizont – zástava času</p>
+  </div>
+
+  <p>
+    Černá díra není singularita.  
+    Je to chyba v interpretaci.
+  </p>
+</section>
+
+</main>
+
+<footer>
+  Součást teoretického výzkumu dynamických systémů · © 2025 Alexandria Dynamics
+</footer>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+</html>  text-transform:uppercase;
   cursor:pointer;
   color:var(--accent);
   margin-right:30px;
